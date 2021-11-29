@@ -9,7 +9,7 @@ import (
 
 func main() {
 
-	adaptor := raspi.NewFirmataAdaptor("firmata", "/dev/ttyACM0")
+	adaptor := raspi.NewAdaptor()
 	lcd := LiquidCrystal.NewLiquidCrystalDriver(adaptor,
 		"LiquidCrystal",
 		0x27,

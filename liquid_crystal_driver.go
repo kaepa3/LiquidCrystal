@@ -57,11 +57,12 @@ const (
 	Rs byte = 1 << 0 // Register select bit
 )
 
-var _ gobot.Driver = (*LiquidCrystalDriver)(nil)
+//var _ gobot.Driver = (*LiquidCrystalDriver)(nil)
 
 type LiquidCrystalDriver struct {
 	name        string
-	connection  i2c.I2c
+	connector   i2c.Connector
+	connection  i2c.Connection
 	addr        byte
 	backlight   byte
 	cols        int
@@ -73,15 +74,15 @@ type LiquidCrystalDriver struct {
 }
 
 // NewLiquidCrystalDriver creates a new driver with specified name and i2c interface
-func NewLiquidCrystalDriver(a i2c.I2c, name string, addr byte, cols int, rows int) *LiquidCrystalDriver {
+func NewLiquidCrystalDriver(a i2c.Connector, name string, addr byte, cols int, rows int) *LiquidCrystalDriver {
 	return &LiquidCrystalDriver{
-		name:       name,
-		connection: a,
-		addr:       addr,
-		backlight:  LCD_BACKLIGHT,
-		cols:       cols,
-		rows:       rows,
-		charsize:   int(LCD_5x8DOTS),
+		name:      name,
+		connector: a,
+		addr:      addr,
+		backlight: LCD_BACKLIGHT,
+		cols:      cols,
+		rows:      rows,
+		charsize:  int(LCD_5x8DOTS),
 	}
 }
 
@@ -93,9 +94,9 @@ func (h *LiquidCrystalDriver) Name() string                 { return h.name }
 func (h *LiquidCrystalDriver) Connection() gobot.Connection { return h.connection.(gobot.Connection) }
 
 // Start initialized the LIDAR
-func (h *LiquidCrystalDriver) Start() (errs []error) {
-	if err := h.connection.I2cStart(h.addr); err != nil {
-		return []error{err}
+func (h *LiquidCrystalDriver) Start() (errs error) {
+	if err := h.Start(); err != nil {
+		return err
 	}
 	h.displayfunc = LCD_4BITMODE | LCD_1LINE | LCD_5x8DOTS
 	if h.rows > 1 {
@@ -154,7 +155,7 @@ func (h *LiquidCrystalDriver) Start() (errs []error) {
 }
 
 // Halt returns true if devices is halted successfully
-func (h *LiquidCrystalDriver) Halt() (errs []error) {
+func (h *LiquidCrystalDriver) Halt() (errs error) {
 	h.Clear()
 	h.NoBacklight()
 	h.NoCursor()
@@ -283,7 +284,8 @@ func (h *LiquidCrystalDriver) Write(value byte) (int, error) {
 
 /************ low level data pushing commands **********/
 func (h *LiquidCrystalDriver) expanderWrite(data byte) error {
-	return h.connection.I2cWrite([]byte{data | h.backlight})
+	_, err := h.Write(data | h.backlight)
+	return err
 }
 
 func (h *LiquidCrystalDriver) pulseEnable(data byte) (err error) {
