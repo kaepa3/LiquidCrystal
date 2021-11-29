@@ -1,16 +1,16 @@
 package main
 
 import (
-	"github.com/Lupino/LiquidCrystal"
-	"github.com/hybridgroup/gobot"
-	"github.com/hybridgroup/gobot/platforms/firmata"
+	"github.com/Kaepa3/LiquidCrystal"
+
+	"gobot.io/x/gobot"
+	"gobot.io/x/gobot/gobot/platforms/raspi"
 )
 
 func main() {
-	gbot := gobot.NewGobot()
 
-	firmataAdaptor := firmata.NewFirmataAdaptor("firmata", "/dev/ttyACM0")
-	lcd := LiquidCrystal.NewLiquidCrystalDriver(firmataAdaptor,
+	adaptor := raspi.NewFirmataAdaptor("firmata", "/dev/ttyACM0")
+	lcd := LiquidCrystal.NewLiquidCrystalDriver(adaptor,
 		"LiquidCrystal",
 		0x27,
 		16,
@@ -21,12 +21,10 @@ func main() {
 	}
 
 	robot := gobot.NewRobot("LiquidCrystal",
-		[]gobot.Connection{firmataAdaptor},
+		[]gobot.Connection{adaptor},
 		[]gobot.Device{lcd},
 		work,
 	)
 
-	gbot.AddRobot(robot)
-
-	gbot.Start()
+	robot.Start()
 }

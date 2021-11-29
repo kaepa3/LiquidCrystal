@@ -2,9 +2,11 @@ package LiquidCrystal
 
 import (
 	"fmt"
-	"github.com/hybridgroup/gobot"
-	"github.com/hybridgroup/gobot/platforms/i2c"
+
 	"time"
+
+	"gobot.io/x/gobot"
+	"gobot.io/x/gobot/drivers/i2c"
 )
 
 const (
