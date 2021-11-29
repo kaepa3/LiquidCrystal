@@ -1,10 +1,10 @@
 package main
 
 import (
-	"github.com/Kaepa3/LiquidCrystal"
+	"github.com/kaepa3/LiquidCrystal"
 
 	"gobot.io/x/gobot"
-	"gobot.io/x/gobot/gobot/platforms/raspi"
+	"gobot.io/x/gobot/platforms/raspi"
 )
 
 func main() {

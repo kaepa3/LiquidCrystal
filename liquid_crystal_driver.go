@@ -345,3 +345,4 @@ func (h *LiquidCrystalDriver) Print(str string) {
 func (h *LiquidCrystalDriver) Printf(str string, v ...interface{}) {
 	h.Print(fmt.Sprintf(str, v...))
 }
+func (s *LiquidCrystalDriver) SetName(n string) { s.name = n }
